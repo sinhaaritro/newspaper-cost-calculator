@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,8 +43,8 @@ export function ComboBox({
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(defaultValue || "");
 
-  const handleSelect = (currentValue: string) => {
-    const newValue = currentValue === value ? "" : currentValue;
+  const handleSelect = (selectedValue: string) => {
+    const newValue = selectedValue === value ? "" : selectedValue;
     setValue(newValue);
     onValueChange(newValue);
     setOpen(false);
@@ -68,7 +67,15 @@ export function ComboBox({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
-        <Command>
+        <Command
+          filter={(value, search) => {
+            const option = options.find((opt) => opt.value === value);
+            if (!option) return 0;
+            return option.label.toLowerCase().includes(search.toLowerCase())
+              ? 1
+              : 0;
+          }}
+        >
           <CommandInput placeholder={placeholder} />
           <CommandList>
             <CommandEmpty>{notFoundText}</CommandEmpty>
