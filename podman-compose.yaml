@@ -1,0 +1,24 @@
+version: "3.8"  # Use a version compatible with Podman Compose
+# doesnt work
+services:
+  react-devcontainer:
+    build:
+      context: .  # Build context is the current directory (where Containerfile is located)
+      dockerfile: Containerfile  # Specify the Containerfile
+    image: react-devcontainer  # Name of the image to build
+    container_name: react-tic-tac-toe-devcontainer  # Name of the running container
+    volumes:
+      - type: bind
+        source: .  # Host's current working directory
+        target: /home/dev/app  # Container's app directory
+        read_only: false  # Allow read/write access
+        selinux: z  # SELinux label for Podman compatibility
+    ports:
+      - "5173:5173"  # Map host port 5173 to container port 5173
+    userns_mode: "keep-id"  # Equivalent to --userns=keep-id
+    tty: true  # Allocate a TTY (equivalent to -t)
+    stdin_open: true  # Keep STDIN open (equivalent to -i)
+    command: ["bash"]  # Default command to run (bash shell)
+    deploy:
+      mode: replicated
+      replicas: 1  # Ensures a single container instance, avoiding pod conflicts
